@@ -21,6 +21,11 @@ mono_crash.*
 .env.*
 
 
+
+M365Agent/appPackage/build/
+
+
+
 appsettings.Development.json
 appsettings.Playground.json
 
