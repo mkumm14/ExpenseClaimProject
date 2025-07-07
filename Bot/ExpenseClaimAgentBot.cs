@@ -93,9 +93,17 @@ namespace ExpenseClaimProject.Bot
                     if (attachment.Content is JsonElement jsonElem
                         && jsonElem.ValueKind == JsonValueKind.Object)
                     {
+
+
+
+                        Console.WriteLine($"This is attachment properties: {attachment.ToString()}");
                         
+                    
                         Console.WriteLine(jsonElem.GetRawText());
 
+
+
+                        string attachmentName = attachment.Name;
 
 
 
@@ -114,6 +122,7 @@ namespace ExpenseClaimProject.Bot
                             ["downloadUrl"] = downloadUrl,
                             ["submittedById"] = submittedById,
                             ["submittedByName"] = submittedByName,
+                            ["attachmentName"] =attachmentName
                         };
 
 

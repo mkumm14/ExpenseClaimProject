@@ -61,7 +61,12 @@ builder.Services.AddSingleton<GraphServiceClient>(sp =>
 
 builder.Services.AddSingleton<DocumentIntelligenceClient>(sp =>
 {
+
+    Console.WriteLine($"[Startup] DocumentIntelligenceClient created with endpoint: {config.Azure.DocumentIntelligenceEndpoint}");
+
     return new DocumentIntelligenceClient(new Uri(config.Azure.DocumentIntelligenceEndpoint), new Azure.AzureKeyCredential(config.Azure.DocumentIntelligenceKey));
+
+
 });
 
 
