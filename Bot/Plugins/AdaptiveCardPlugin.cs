@@ -304,32 +304,92 @@ namespace ExpenseClaimProject.Bot.Plugins
 
 
 
+        //    [KernelFunction("GenerateConfirmationCard")]
+        //    [Description("Generates a read-only confirmation adaptive card with all fields and submit/cancel buttons.")]
+        //    public string GenerateConfirmationCard(string merchantName, string transactionDate, string total, string currency, string category, string paymentMethod, string fourDigits,string expenseType, string notes = "")
+        //    {
+        //        // Only show fourDigits if payment method is card
+        //        bool showFourDigits = paymentMethod?.ToLowerInvariant().Contains("card") == true && !string.IsNullOrWhiteSpace(fourDigits);
+
+        //        var body = new List<object>
+        //{
+        //    new { type = "TextBlock", text = "Confirm Expense Claim Submission", weight = "Bolder", size = "Medium" },
+        //    new { type = "TextBlock", text = $"**Merchant Name:** {merchantName}" },
+        //    new { type = "TextBlock", text = $"**Transaction Date:** {transactionDate}" },
+        //    new { type = "TextBlock", text = $"**Total Amount:** {total}" },
+        //    new { type = "TextBlock", text = $"**Currency:** {currency}" },
+        //    new { type = "TextBlock", text = $"**Category:** {category}" },
+        //    new { type = "TextBlock", text = $"**Expense Type:** {expenseType}" },
+        //    new { type = "TextBlock", text = $"**Payment Method:** {paymentMethod}" },
+
+
+        //};
+
+        //        if (showFourDigits)
+        //            body.Add(new { type = "TextBlock", text = $"**Last 4 Digits of Card:** {fourDigits}" });
+
+        //        if (!string.IsNullOrWhiteSpace(notes))
+        //            body.Add(new { type = "TextBlock", text = $"**Notes:** {notes}" });
+
+        //        var card = new
+        //        {
+        //            type = "AdaptiveCard",
+        //            version = "1.5",
+        //            body = body,
+        //            actions = new List<object>
+        //    {
+        //        new
+        //        {
+        //            type = "Action.Submit",
+        //            title = "✅ Submit",
+        //            data = new { action = "submitClaim" }
+        //        },
+        //        new
+        //        {
+        //            type = "Action.Submit",
+        //            title = "❌ Cancel",
+        //            data = new { action = "cancelClaim" }
+        //        }
+        //    }
+        //        };
+
+        //        return JsonSerializer.Serialize(card);
+        //    }
         [KernelFunction("GenerateConfirmationCard")]
         [Description("Generates a read-only confirmation adaptive card with all fields and submit/cancel buttons.")]
-        public string GenerateConfirmationCard(string merchantName, string transactionDate, string total, string currency, string category, string paymentMethod, string fourDigits,string expenseType, string notes = "")
+        public string GenerateConfirmationCard(string merchantName, string transactionDate, string total, string currency, string category, string paymentMethod, string fourDigits, string expenseType, string notes = "")
         {
-            // Only show fourDigits if payment method is card
             bool showFourDigits = paymentMethod?.ToLowerInvariant().Contains("card") == true && !string.IsNullOrWhiteSpace(fourDigits);
 
             var body = new List<object>
     {
-        new { type = "TextBlock", text = "Confirm Expense Claim Submission", weight = "Bolder", size = "Medium" },
-        new { type = "TextBlock", text = $"**Merchant Name:** {merchantName}" },
-        new { type = "TextBlock", text = $"**Transaction Date:** {transactionDate}" },
-        new { type = "TextBlock", text = $"**Total Amount:** {total}" },
-        new { type = "TextBlock", text = $"**Currency:** {currency}" },
-        new { type = "TextBlock", text = $"**Category:** {category}" },
-        new { type = "TextBlock", text = $"**Expense Type:** {expenseType}" },
-        new { type = "TextBlock", text = $"**Payment Method:** {paymentMethod}" },
-        
+        new { type = "TextBlock", text = "🧾 Confirm Expense Submission", weight = "Bolder", size = "Large", wrap = true, spacing = "Medium" },
+        new { type = "TextBlock", text = "Please review the details below before submitting your claim.", wrap = true, spacing = "Small", isSubtle = true },
 
+        new { type = "TextBlock", text = "Expense Details", weight = "Bolder", spacing = "Medium", separator = true },
+        new { type = "FactSet", facts = new List<object>
+            {
+                new { title = "Merchant Name:", value = merchantName },
+                new { title = "Transaction Date:", value = transactionDate },
+                new { title = "Total Amount:", value = total },
+                new { title = "Currency:", value = currency },
+                new { title = "Category:", value = category },
+                new { title = "Expense Type:", value = expenseType },
+                new { title = "Payment Method:", value = paymentMethod }
+            }
+        }
     };
 
             if (showFourDigits)
-                body.Add(new { type = "TextBlock", text = $"**Last 4 Digits of Card:** {fourDigits}" });
+            {
+                ((List<object>)((dynamic)body[3]).facts).Add(new { title = "Card Last 4 Digits:", value = fourDigits });
+            }
 
             if (!string.IsNullOrWhiteSpace(notes))
-                body.Add(new { type = "TextBlock", text = $"**Notes:** {notes}" });
+            {
+                body.Add(new { type = "TextBlock", text = "📝 Notes", weight = "Bolder", spacing = "Medium", separator = true });
+                body.Add(new { type = "TextBlock", text = notes, wrap = true });
+            }
 
             var card = new
             {
@@ -342,12 +402,14 @@ namespace ExpenseClaimProject.Bot.Plugins
             {
                 type = "Action.Submit",
                 title = "✅ Submit",
+                style = "positive",
                 data = new { action = "submitClaim" }
             },
             new
             {
                 type = "Action.Submit",
                 title = "❌ Cancel",
+                style = "destructive",
                 data = new { action = "cancelClaim" }
             }
         }
@@ -355,6 +417,7 @@ namespace ExpenseClaimProject.Bot.Plugins
 
             return JsonSerializer.Serialize(card);
         }
+
 
     }
 }
