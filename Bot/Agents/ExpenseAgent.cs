@@ -34,7 +34,7 @@ public class ExpenseAgent
                - If this is the first message, greet the user and ask them to upload a receipt or provide expense details.
  
             2. **If a receipt image or URL is provided**
-               - Extract receipt data from the image using the downloadUrl. Add the submittedById, submittedByName, and contentUrl to the extracted data.
+               - Extract receipt data from the image using the downloadUrl. Add the submittedById and submittedByName to the extracted data.
                - Use that data to generate a pre-filled form as an Adaptive Card.
                - If some fields are missing, show them with empty text inputs for the user to complete.
             

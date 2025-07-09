@@ -30,8 +30,7 @@ namespace ExpenseClaimProject.Bot
 
         private readonly GraphServiceClient _graphClient;
 
-        public ExpenseClaimAgentBot(AgentApplicationOptions options, Kernel kernel, IServiceProvider services, IHttpClientFactory httpFactory, GraphServiceClient graphClient)
-            : base(options)
+        public ExpenseClaimAgentBot(AgentApplicationOptions options, Kernel kernel, IServiceProvider services, IHttpClientFactory httpFactory, GraphServiceClient graphClient) : base(options)
         {
             _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
 
@@ -51,8 +50,8 @@ namespace ExpenseClaimProject.Bot
             CancellationToken cancellationToken)
         {
 
-            await turnContext.StreamingResponse
-                 .QueueInformativeUpdateAsync("Working on your request…");
+            //await turnContext.StreamingResponse
+            //     .QueueInformativeUpdateAsync("Working on your request…");
 
 
 
@@ -60,6 +59,9 @@ namespace ExpenseClaimProject.Bot
 
 
 
+
+
+            await turnContext.SendActivityAsync(new Activity { Type = ActivityTypes.Typing });
 
             _expenseClaimAgent = new ExpenseAgent(_kernel, _services);
             var chatHistory = turnState.GetValue(
@@ -255,8 +257,8 @@ namespace ExpenseClaimProject.Bot
                         "Please send some text or upload a receipt image to proceed."),
                     cancellationToken);
             }
-            await turnContext.StreamingResponse.EndStreamAsync(cancellationToken); // End the streaming response
-
+            //await turnContext.StreamingResponse.EndStreamAsync(cancellationToken); // End the streaming response
+            //await turnContext.SendActivityAsync(new Activity { Type = ActivityTypes.Typing });
         }
 
 
