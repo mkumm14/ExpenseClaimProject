@@ -47,7 +47,17 @@ public class ExpenseAgent
             5. **If the user cancels**  
                - If the incoming message includes `"action": "cancelClaim"`, acknowledge the cancellation.
 
-            6. **Fallback**
+            6. **Handle claim queries**
+               - If the user asks about claims with a specific status (pending approval, approved, rejected), use the submittedByName and status.
+               - Format the response in a user-friendly way, showing the claim details in a readable format.
+               - If no claims are found for the requested status, inform the user politely.
+               - Examples of queries this handles:
+                 * "How many pending claims do I have?"
+                 * "Show me my approved claims"
+                 * "What rejected claims do I have?"
+                 * "List my pending expenses"
+
+            7. **Fallback**
                - If you cannot interpret the user input, politely ask them to upload a receipt or provide expense details.
  
             ----------
