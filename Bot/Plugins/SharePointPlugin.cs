@@ -52,7 +52,7 @@ namespace ExpenseClaimProject.Bot.Plugins
             Console.WriteLine($"[SharePointPlugin] ⚙️ UploadExpenseDataAsync called with payload:\n{expenseJson}");
 
 
-            Console.WriteLine("sarepointOptions: " + JsonSerializer.Serialize(_sharepointOptions));  
+            Console.WriteLine("sharepointOptions: " + JsonSerializer.Serialize(_sharepointOptions));  
 
             // Parse the expense JSON
             using var doc = JsonDocument.Parse(expenseJson);
@@ -118,6 +118,9 @@ namespace ExpenseClaimProject.Bot.Plugins
             };
             return JsonSerializer.Serialize(result);
         }
+
+
+
 
         [KernelFunction("GetClaimsByStatus")]
         [Description("Gets claims filtered by status")]
