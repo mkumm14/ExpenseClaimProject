@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0" />
-    <PackageReference Include="Azure.Identity" Version="1.14.1" />
+    <PackageReference Include="Azure.Identity" Version="1.14.2" />
     <PackageReference Include="AdaptiveCards" Version="3.1.0" />
     <PackageReference Include="Microsoft.Graph" Version="5.83.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Agents.AzureAI" Version="1.45.0-preview" />

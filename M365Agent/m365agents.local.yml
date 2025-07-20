@@ -53,8 +53,8 @@ provision:
           OpenAIApiKey: ${{SECRET_AZURE_OPENAI_API_KEY}}
           OpenAIEndpoint: ${{AZURE_OPENAI_ENDPOINT}}
           OpenAIDeploymentName: ${{AZURE_OPENAI_DEPLOYMENT_NAME}}
-          DocumentIntelligenceKey: ${{AZURE_DOCUMENT_INTELLIGENCE_KEY}}
-          DocumentIntelligenceEndpoint: ${{SECRET_AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT}}
+          DocumentIntelligenceKey: ${{SECRET_AZURE_DOCUMENT_INTELLIGENCE_KEY}}
+          DocumentIntelligenceEndpoint: ${{AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT}}
 
   # Create or update the bot registration on dev.botframework.com
   - uses: botFramework/create

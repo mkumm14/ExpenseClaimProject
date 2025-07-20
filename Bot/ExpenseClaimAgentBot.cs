@@ -102,7 +102,9 @@ namespace ExpenseClaimProject.Bot
 
                         Console.WriteLine($"This is attachment properties: {attachment.ToString()}");
                         
-                    
+
+                        Console.WriteLine($"Attachment.Content is JsonElement: {attachment.Content}");
+
                         Console.WriteLine(jsonElem.GetRawText());
 
 
