@@ -33,7 +33,6 @@ namespace ExpenseClaimProject.Bot.Plugins
             resp.EnsureSuccessStatusCode();
             var imageBytes = await resp.Content.ReadAsByteArrayAsync();
 
-
             var data = BinaryData.FromBytes(imageBytes);
 
             Console.WriteLine(_ocrClient);
@@ -44,8 +43,13 @@ namespace ExpenseClaimProject.Bot.Plugins
                 bytesSource: data);
 
             var result = operation.Value;
+
+            string resultContent = result.Content; 
+
+            Console.WriteLine($"[ReceiptProcessingPlugin] OCR Result: {resultContent}");
+
             var options = new JsonSerializerOptions { WriteIndented = true };
-            return JsonSerializer.Serialize(result, options);
+            return JsonSerializer.Serialize(resultContent, options);
         }
 
 

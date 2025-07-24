@@ -77,7 +77,7 @@ public class ExpenseAgent
 
             Responsibilities:
             1. If first message: greet and ask for a receipt upload or expense details.
-            2. If a receipt image/URL is provided: extract data, add submittedById, contentUrl, submittedByName. Generate an Adaptive Card form with data; show missing fields as empty inputs.
+            2. If a receipt image/URL is provided: extract data using downloadUrl. Add submittedById, downloadUrl, submittedByName. Generate an Adaptive Card form with data; show missing fields as empty inputs.
             3. If "action": "submitValidationForm": generate a read-only summary card with submit and cancel buttons.
             4. If "action": "submitClaim": store data, return confirmation and the item ID.
             5. If "action": "cancelClaim": acknowledge cancellation.

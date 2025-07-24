@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using ExpenseClaimProject.Utils;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Models.Security;
@@ -17,18 +18,21 @@ namespace ExpenseClaimProject.Bot.Plugins
         private readonly GraphServiceClient _graph;
         private readonly SharepointConfigOptions _sharepointOptions;
         private readonly Lazy<Task<Site>> _siteLazy;
+        private readonly HttpClient _httpClient;
 
-        public SharePointPlugin(GraphServiceClient graphClient, IOptions<ConfigOptions> configOptions)
+
+        public SharePointPlugin(GraphServiceClient graphClient, IOptions<ConfigOptions> configOptions, IHttpClientFactory httpFactory )
         {
             _graph = graphClient;
             _sharepointOptions = configOptions.Value.Sharepoint;
 
-            _siteLazy= new Lazy<Task<Site>>(async () =>
+            _siteLazy = new Lazy<Task<Site>>(async () =>
             {
                 // Compose the site key for SharePoint
                 string siteKey = $"{_sharepointOptions.HostName}:{_sharepointOptions.SitePath}";
                 return await _graph.Sites[siteKey].GetAsync();
             });
+            _httpClient = httpFactory.CreateClient("webClient");
         }
 
         private async Task<Site> GetSiteAsync()
@@ -70,15 +74,37 @@ namespace ExpenseClaimProject.Bot.Plugins
             string notes = root.TryGetProperty("notes", out var notesProp) ? notesProp.GetString() ?? "" : "";
             string employeeName= root.TryGetProperty("submittedByName", out var empProp) ? empProp.GetString() ?? "" : "";
             string employeeId = root.TryGetProperty("submittedById", out var empIdProp) ? empIdProp.GetString() ?? "" : ""; 
+
+
+            string downloadUrl = root.TryGetProperty("downloadUrl", out var downloadUrlProp) ? downloadUrlProp.GetString() ?? "" : "";
+
+
             var site = await GetSiteAsync();
             var list = await GetListAsync();
 
 
 
+            Console.WriteLine($"The download URL  is {downloadUrl}");
+
 
             Console.WriteLine($"[SharePointPlugin] ⚙️ Site found: {site.Id} ({site.Name})");
 
             Console.WriteLine($"[SharePointPlugin] ⚙️ List found: {list.Id} ({list.Name})");
+
+
+
+
+
+            byte[] imageBytes = await ImageDownloader.DownloadImageBytesAsync(_httpClient, downloadUrl);
+
+            // 2. Get the document library (Drive) ID
+            var drives = await _graph.Sites[site.Id].Drives.GetAsync();
+            var documentLibrary = drives.Value.FirstOrDefault(d => d.Name == "Documents"); // or your library name
+            if (documentLibrary == null) throw new Exception("Document library not found");
+
+            // 3. Upload the file
+            string fileName = $"receipt-{Guid.NewGuid()}.jpg";
+            var driveItem = await _graph.Drives[documentLibrary.Id].Root.ItemWithPath(fileName).Content.PutAsync(new MemoryStream(imageBytes));
 
             // Prepare SharePoint field values (adjust field names as per your SharePoint list schema)
             var fieldValues = new Dictionary<string, object>
@@ -91,6 +117,7 @@ namespace ExpenseClaimProject.Bot.Plugins
                 ["ExpenseType"] = expenseType,
                 ["PaymentMethod"] = paymentMethod,
                 ["FourDigits"] = paymentMethod.ToLower().Contains("card") ? fourDigits : "",
+                ["ReceiptLink"] = driveItem.WebUrl,
                 ["EmployeeName"] = employeeName,
                 ["Notes"] = notes
 
